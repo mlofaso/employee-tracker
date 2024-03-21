@@ -3,7 +3,7 @@ CREATE DATABASE employees_db;
 
 USE employees_db;
 
-CREATE TABLE  department (
+CREATE TABLE department (
     id INT NOT NULL,
     name VARCHAR(30),
     PRIMARY KEY (id)
