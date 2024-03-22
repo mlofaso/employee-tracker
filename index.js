@@ -13,13 +13,11 @@ const mysql = require("mysql2");
 const db = mysql.createConnection(
   {
     host: "localhost",
-    // MySQL username,
     user: "root",
-    // MySQL password
     password: "",
     database: "employees_db",
   },
-  console.log(`Connected to the courses_db database.`)
+  console.log(`Connected to the employees_db database.`)
 );
 
 function menu() {
@@ -52,6 +50,18 @@ function menu() {
         case "View All Employees":
           viewEmployees();
           break;
+        case "Add a Department":
+          addDepartment();
+          break;
+        case "Add a Role":
+          addRole();
+          break;
+        case "Add an Employee":
+          addEmployee();
+          break;
+        case "Update an Employee Role":
+          updateEmployeeRole();
+          break;
         default:
           process.exit();
           break;
@@ -82,4 +92,21 @@ function viewEmployees() {
     menu();
   });
 }
+
+function addDepartment() {
+  inquirer.prompt([
+    {
+      type: "input",
+      name: "addDepartment",
+      message: "Please enter the Department name:",
+    },
+  ]);
+}
+
+function addRole() {}
+
+function addEmployee() {}
+
+function updateEmployeeRole() {}
+
 menu();
