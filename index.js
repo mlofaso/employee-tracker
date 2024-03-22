@@ -51,6 +51,10 @@ function menu() {
           viewDepartments();
           break;
         case "View All Roles":
+          viewRoles();
+          break;
+        case "View All Employees":
+          viewEmployees();
           break;
         default:
           process.exit();
@@ -67,4 +71,19 @@ function viewDepartments() {
   });
 }
 
+function viewRoles() {
+  db.query("SELECT * FROM role;", (err, result) => {
+    if (err) throw err;
+    console.table(result);
+    menu();
+  });
+}
+
+function viewEmployees() {
+  db.query("SELECT * FROM employee;", (err, result) => {
+    if (err) throw err;
+    console.table(result);
+    menu();
+  });
+}
 menu();
