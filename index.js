@@ -78,29 +78,46 @@ function viewDepartments() {
 }
 
 function viewRoles() {
-  db.query("SELECT * FROM role;", (err, result) => {
-    if (err) throw err;
-    console.table(result);
-    menu();
-  });
+  db.query(
+    "SELECT role.title, role.id, department.name, role.salary FROM role LEFT JOIN department ON role.department_id = department.id;",
+    (err, result) => {
+      if (err) throw err;
+      console.table(result);
+      menu();
+    }
+  );
 }
 
 function viewEmployees() {
-  db.query("SELECT * FROM employee;", (err, result) => {
-    if (err) throw err;
-    console.table(result);
-    menu();
-  });
+  db.query(
+    "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name, role.salary, manager.first_name AS managerFirstName, manager.last_name AS managerLastName FROM employee LEFT JOIN role ON employee.role_id=role.id LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee AS manager ON manager.id =  employee.manager_id;",
+    (err, result) => {
+      if (err) throw err;
+      console.table(result);
+      menu();
+    }
+  );
 }
 
 function addDepartment() {
-  inquirer.prompt([
-    {
-      type: "input",
-      name: "addDepartment",
-      message: "Please enter the Department name:",
-    },
-  ]);
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "addDepartment",
+        message: "Please enter the Department name:",
+      },
+    ])
+    .then((answer) => {
+      db.query(
+        `INSERT INTO department (name) VALUES ("${answer.addDepartment}")`,
+        (err, result) => {
+          if (err) throw err;
+          console.log("department added");
+          menu();
+        }
+      );
+    });
 }
 
 function addRole() {}
