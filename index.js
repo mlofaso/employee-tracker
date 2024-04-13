@@ -144,7 +144,7 @@ function addRole() {
       .then((answer) => {
         console.log(answer);
         db.query(
-          `INSERT INTO role (title, salary, department_id) VALUES ("${answer.title}", ${answer.salary}, ${answer.department_id})`,
+          `INSERT INTO role (title, salary, department_id) VALUES ("${answer.title}", "${answer.salary}", "${answer.department_id}")`,
           (err, result) => {
             if (err) throw err;
             console.log("role added");
@@ -175,7 +175,7 @@ function addEmployee() {
       }));
 
       employeeData.unshift({
-        name: "No manager",
+        name: "No Manager",
         value: null,
       });
 
@@ -207,7 +207,7 @@ function addEmployee() {
         .then((answer) => {
           console.log(answer);
           db.query(
-            `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${answer.first_name}", "${answer.last_name}", ${answer.role_id}, ${answer.manager_id})`,
+            `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${answer.first_name}", "${answer.last_name}", "${answer.role_id}", "${answer.manager_id}")`,
             (err, result) => {
               if (err) throw err;
               console.log("role added");
@@ -221,6 +221,56 @@ function addEmployee() {
 
 // WHEN I choose to update an employee role
 // THEN I am prompted to select an employee to update and their new role and this information is updated in the database
-function updateEmployeeRole() {}
+function updateEmployeeRole() {
+  db.query(`SELECT * FROM role`, (err, result) => {
+    if (err) throw err;
+
+    const roleData = result.map(({ id, title }) => ({
+      name: title,
+      value: id,
+    }));
+
+    db.query(`SELECT * FROM employee`, (err, result) => {
+      if (err) throw err;
+
+      const employeeData = result.map(({ first_name, last_name, id }) => ({
+        name: `${first_name} ${last_name}`,
+        value: id,
+      }));
+
+      employeeData.unshift({
+        name: "No Manager",
+        value: null,
+      });
+
+      inquirer
+        .prompt([
+          {
+            type: "list",
+            name: "employee_id",
+            message: "What is the name of the employee you'd like to update?",
+            choices: employeeData,
+          },
+          {
+            type: "list",
+            name: "role_id",
+            message: "What is their new role?",
+            choices: roleData,
+          },
+        ])
+        .then((answer) => {
+          console.log(answer);
+          db.query(
+            `UPDATE employee SET role_id = ${answer.role_id} WHERE employee_id = "${answer.employee_id}"`,
+            (err, result) => {
+              if (err) throw err;
+              console.log("role updated");
+              menu();
+            }
+          );
+        });
+    });
+  });
+}
 
 menu();
